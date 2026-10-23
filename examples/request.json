@@ -1,0 +1,16 @@
+{
+  "action": "plan",
+  "tasks": [
+    {
+      "id": "design",
+      "duration": 2
+    },
+    {
+      "id": "api",
+      "duration": 5,
+      "deps": [
+        "design"
+      ]
+    }
+  ]
+}

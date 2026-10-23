@@ -1,0 +1,36 @@
+[
+  {
+    "id": "design",
+    "duration": 2,
+    "deps": []
+  },
+  {
+    "id": "api",
+    "duration": 5,
+    "deps": [
+      "design"
+    ]
+  },
+  {
+    "id": "web",
+    "duration": 3,
+    "deps": [
+      "design"
+    ]
+  },
+  {
+    "id": "test",
+    "duration": 2,
+    "deps": [
+      "api",
+      "web"
+    ]
+  },
+  {
+    "id": "release",
+    "duration": 1,
+    "deps": [
+      "test"
+    ]
+  }
+]
