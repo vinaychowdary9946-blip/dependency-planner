@@ -14,8 +14,8 @@ def plan(tasks):
         ident=task.get('id'); duration=task.get('duration'); deps=task.get('deps',[])
         if not isinstance(ident,str) or not ident.strip() or ident in graph:
             raise ValueError('Task IDs must be unique nonempty strings')
-        if type(duration) not in (int,float) or not math.isfinite(duration) or duration<=0:
-            raise ValueError('Duration must be finite and positive')
+        if type(duration) not in (int,float) or not 0 < duration <= 1_000_000_000:
+            raise ValueError('Duration must be positive and at most 1,000,000,000')
         if not isinstance(deps,list) or any(not isinstance(d,str) for d in deps) or len(set(deps))!=len(deps):
             raise ValueError('Dependencies must be unique task IDs')
         graph[ident]={'duration':duration,'deps':deps}
@@ -38,7 +38,7 @@ def plan(tasks):
     total=max(ends.values()); latest={}
     for k in reversed(order):
         latest[k]=min((latest[c] for c in children[k]),default=total)-graph[k]['duration']
-    return {'duration':total,'order':order,'tasks':[{'id':k,'start':starts[k],'finish':ends[k],'slack':round(latest[k]-starts[k],10),'critical':math.isclose(latest[k],starts[k])} for k in order]}
+    return {'duration':total,'order':order,'tasks':[{'id':k,'start':starts[k],'finish':ends[k],'slack':round(latest[k]-starts[k],10),'critical':math.isclose(latest[k],starts[k],rel_tol=0,abs_tol=1e-9)} for k in order]}
 
 
 def impacted(tasks, changed):

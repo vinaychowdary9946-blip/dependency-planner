@@ -24,4 +24,12 @@ class PlannerTests(unittest.TestCase):
    self.assertEqual(set(p['order']),set(canonical)); positions={k:i for i,k in enumerate(p['order'])}
    for t in ts:
     for d in t['deps']: self.assertLess(positions[d],positions[t['id']])
+ def test_large_timestamp_slack_is_not_critical(self):
+  tasks=[{'id':'a','duration':1000000000}, {'id':'b','duration':1,'deps':['a']}, {'id':'c','duration':1.5,'deps':['a']}]
+  b=next(t for t in plan(tasks)['tasks'] if t['id']=='b')
+  self.assertEqual(b['slack'],.5)
+  self.assertFalse(b['critical'])
+ def test_extreme_durations_rejected(self):
+  for duration in [float('inf'),10**1000,1000000001]:
+   with self.assertRaises(ValueError): plan([{'id':'a','duration':duration}])
 if __name__=='__main__': unittest.main()
